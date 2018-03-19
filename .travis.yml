@@ -3,13 +3,21 @@ sudo: required
 language: python
 
 services:
-  - docker
-  
-  env:
-  - DOCKER_COMPOSE_VERSION=3
+  - docker-compose
 
-before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+before_script:
+# Let's stop postgresql
+  - sudo service postgresql stop
+  # wait for postgresql to shutdown
+  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+  - docker-compose build ajegugu
+  - docker-compose up -d ajegugu
+  - sleep 10
+
+script:
+- docker ps
+- docker logs ajegugu
+- docker exec -it ajegugu bash -c "pytest --cov-report term-missing --cov"
+
+after_script:
+- docker-compose stop ajegugu
