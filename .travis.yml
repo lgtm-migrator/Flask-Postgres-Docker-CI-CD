@@ -18,7 +18,6 @@ before_script:
 script:
 - docker ps
 - docker logs web
-- docker exec -it web bash -c "pytest --cov-report term-missing --cov"
 
 after_script:
 - docker-compose stop web
