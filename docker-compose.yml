@@ -1,24 +1,23 @@
-version: '3'
-
-services:  
-db:
-    container_name: todo_db
-    image: postgres
-    restart: always
-    volumes:
-      - ./postgres-data/postgres:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-      
-web:
-    container_name: todo_web
+version: '2'
+services:
+  web:
+    container_name: "web"
     build: .
-    env_file:
-      - ./.env
-    volumes:
-      - .:/proton
-    depends_on:
-      - postgres
+    working_dir: "/app"
     ports:
-      - "5000:5000"
-    entrypoint: ["./run_web.sh"]
+     - "5000:5000"
+    volumes:
+     - ./:/app
+    depends_on:
+    - database
+    privileged: true
+    entrypoint: bash -c "chmod 777 postgres.sh && ./postgres.sh db-todo 5432 && python manage.py db upgrade && python manage.py runserver -h=0.0.0.0 -p=5000"
+  database:
+    container_name: "db-todo"
+    image: postgres:9
+    restart: always
+    env_file: .env
+    expose:
+      - 5432
+
+

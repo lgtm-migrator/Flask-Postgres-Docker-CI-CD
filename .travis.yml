@@ -1,3 +1,4 @@
+
 sudo: required
 
 language: python
@@ -10,14 +11,14 @@ before_script:
   - sudo service postgresql stop
   # wait for postgresql to shutdown
   - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
-  - docker-compose build ajegugu
-  - docker-compose up -d ajegugu
+  - docker-compose build web
+  - docker-compose up -d web
   - sleep 10
 
 script:
 - docker ps
-- docker logs ajegugu
-- docker exec -it ajegugu bash -c "pytest --cov-report term-missing --cov"
+- docker logs web
+- docker exec -it web bash -c "pytest --cov-report term-missing --cov"
 
 after_script:
-- docker-compose stop ajegugu
+- docker-compose stop web

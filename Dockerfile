@@ -1,15 +1,17 @@
 FROM python:3.6.2
 
-RUN apt-get update
+MAINTAINER Dennis Otugo "otugodennis@gmail.com"
 
-RUN mkdir -p /proton
+ADD . /app
 
-WORKDIR /proton
+WORKDIR /app
 
-COPY . /proton
+RUN apt-get update && apt-get install -f -y postgresql-client
 
 RUN pip install -r requirements.txt
 
-VOLUME ["/proton"]
+EXPOSE 5000
 
-ENTRYPOINT ["./run_web.sh"]
+ENV FLASK_APP=manage.py
+
+RUN [ "chmod", "777", "postgres.sh" ]
