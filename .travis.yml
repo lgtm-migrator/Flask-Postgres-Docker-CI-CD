@@ -1,23 +1,16 @@
-
 sudo: required
-
 language: python
-
 services:
-  - docker-compose
-
+- docker-compose
 before_script:
-# Let's stop postgresql
-  - sudo service postgresql stop
-  # wait for postgresql to shutdown
-  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
-  - docker-compose build web
-  - docker-compose up -d web
-  - sleep 10
-
+- sudo service postgresql stop
+- while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+- docker-compose build web
+- docker-compose up -d web
+- sleep 10
 script:
 - docker ps
 - docker logs web
-
 after_script:
 - docker-compose stop web
+
