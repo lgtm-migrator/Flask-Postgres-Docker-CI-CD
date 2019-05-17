@@ -1,14 +1,12 @@
-FROM python:3.6.2
-
-MAINTAINER Dennis Otugo "otugodennis@gmail.com"
-
-ADD . /app
+FROM python:3.6.8
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -f -y postgresql-client
 
-RUN pip install -r requirements.txt
+COPY . /app
+
+RUN pip install --upgrade -r requirements.txt
 
 EXPOSE 5000
 
