@@ -9,11 +9,11 @@ services:
     volumes:
      - ./:/app
     depends_on:
-    - database
+    - db
     privileged: true
-    entrypoint: bash -c "chmod 777 postgres.sh && ./postgres.sh db-todo 5432 && python manage.py db init && python manage.py db upgrade && python manage.py runserver -h=0.0.0.0 -p=5000"
-  database:
-    container_name: "db-todo"
+    entrypoint: bash -c "rm -rf __pycache__/ migrations/ && chmod 777 postgres.sh && ./postgres.sh db 5432 && python manage.py db init && python manage.py db migrate && python manage.py db upgrade && gunicorn -b 0.0.0.0:5000 manage:app"
+  db:
+    container_name: "db"
     image: postgres:9
     restart: always
     env_file: .env
