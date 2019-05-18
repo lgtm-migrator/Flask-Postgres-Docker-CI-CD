@@ -3,14 +3,11 @@ language: python
 services:
 - docker-compose
 before_script:
-- sudo service postgresql stop
-- while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
-- docker-compose build web
-- docker-compose up -d web
+- docker-compose build
+- docker-compose up -d
 - sleep 10
 script:
 - docker ps
 - docker logs web
 after_script:
-- docker-compose stop web
-
+- docker-compose down
